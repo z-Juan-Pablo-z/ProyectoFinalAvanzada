@@ -9,6 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { FormareservaComponent } from './formareserva/formareserva.component';
 import { HabitacionesComponent } from './habitaciones/habitaciones.component';
 import { DescripcionComponent } from './descripcion/descripcion.component';
+import {HttpClientModule} from '@angular/common/http'
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { DescripcionComponent } from './descripcion/descripcion.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
