@@ -13,11 +13,8 @@ export class HomeComponent {
   constructor(public servicioHabitacion:HabitacionesService) { 
     servicioHabitacion.consultarHabitaciones()
     .subscribe(respuesta=>{
-      this.habitaciones = respuesta;
+      this.habitaciones = respuesta.datos;
       console.log(respuesta);
     })
   }
-
-
-
 }
