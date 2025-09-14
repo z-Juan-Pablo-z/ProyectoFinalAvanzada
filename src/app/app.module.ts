@@ -8,8 +8,10 @@ import { FooterComponent } from './shared/footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { FormareservaComponent } from './formareserva/formareserva.component';
 import { HabitacionesComponent } from './habitaciones/habitaciones.component';
-import { DescripcionComponent } from './descripcion/descripcion.component';
-import {HttpClientModule} from '@angular/common/http'
+import {HttpClientModule} from '@angular/common/http';
+import { HabitacionFormComponent } from './components/habitacion-form/habitacion-form.component'
+import { FormsModule } from '@angular/forms';
+import { HabitacionListComponent } from './components/habitacion-list/habitacion-list.component'; //
 
 @NgModule({
   declarations: [
@@ -19,11 +21,13 @@ import {HttpClientModule} from '@angular/common/http'
     HomeComponent,
     FormareservaComponent,
     HabitacionesComponent,
-    DescripcionComponent
+    HabitacionFormComponent,
+    HabitacionListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     HttpClientModule
   ],
   providers: [],

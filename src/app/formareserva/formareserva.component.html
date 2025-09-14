@@ -1,57 +1,128 @@
-<form class="text-white fw-bold ">
+<form class="text-white fw-bold" (ngSubmit)="buscarDisponibilidad(f)" #f="ngForm">
 
-    <div class="row">
-        <div class="col-12">
-            <h2 class="b">RESERVA YA!</h2>
-            <h4>Desde 150$ USD</h4>
-        </div>
+  <div class="row">
+    <div class="col-12">
+      <h2 class="b">RESERVA YA!</h2>
+      <h4>Desde 150$ USD</h4>
     </div>
-    <hr>
+  </div>
+  <hr>
 
-    <div class="">
-        <div class="col-12 ">
-            <label class="form-label">Fecha Entrada</label> 
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-                <input type="date" class="form-control" placeholder="ENTRADA" >
-            </div>
-        </div>
-        <div class="col-12 ">
-            <label class="form-label">Fecha Salida</label>
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-                <input type="date" class="form-control" placeholder="ENTRADA" >
-            </div>
-        </div>
+  <div>
+    <div class="col-12">
+      <label class="form-label">Fecha Entrada</label>
+      <div class="input-group mb-3">
+        <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="busqueda.fechaEntrada"
+          name="fechaEntrada"
+          required
+          #fechaEntrada="ngModel"
+          (change)="validarRangoFechas()"
+        >
+      </div>
+      <div *ngIf="fechaEntrada.invalid && fechaEntrada.touched" class="text-warning">
+        Fecha de entrada requerida.
+      </div>
     </div>
-    <div class="row d-flex flex-wrap">
-        <div class="col-12 col-md-6">
-            <label class="form-label">Numero de Adultos</label>
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                <select class="form-select">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>                  
-            </div>
-        </div>
-        <div class="col-12 col-md-6">
-            <label class="form-label">Numero de Niños</label>
-            <div class="input-group mb-3">
-                <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                <select class="form-select">
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>                  
-            </div>
 
-        </div>
+    <div class="col-12">
+      <label class="form-label">Fecha Salida</label>
+      <div class="input-group mb-3">
+        <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="busqueda.fechaSalida"
+          name="fechaSalida"
+          required
+          #fechaSalida="ngModel"
+          (change)="validarRangoFechas()"
+        >
+      </div>
+      <div *ngIf="fechaSalida.invalid && fechaSalida.touched" class="text-warning">
+        Fecha de salida requerida.
+      </div>
+      <div *ngIf="!rangoFechasValido && fechaEntrada.valid && fechaSalida.valid" class="text-danger">
+        La fecha de salida debe ser posterior a la de entrada.
+      </div>
     </div>
-    <button type="submit" class="btn btn-outline-light w-100">Ver disponibilidad</button>
+  </div>
+
+  <div class="row d-flex flex-wrap">
+    <div class="col-12 col-md-6">
+      <label class="form-label">Número de Adultos</label>
+      <div class="input-group mb-3">
+        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+        <select
+          class="form-select"
+          [(ngModel)]="busqueda.adultos"
+          name="adultos"
+          required
+          #adultos="ngModel"
+        >
+          <option value="" disabled selected>Seleccione</option>
+          <option *ngFor="let a of [1,2,3,4,5]" [value]="a">{{a}}</option>
+        </select>
+      </div>
+      <div *ngIf="adultos.invalid && adultos.touched" class="text-warning">
+        Selecciona el número de adultos.
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <label class="form-label">Número de Niños</label>
+      <div class="input-group mb-3">
+        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+        <select
+          class="form-select"
+          [(ngModel)]="busqueda.ninos"
+          name="ninos"
+          required
+          #ninos="ngModel"
+        >
+          <option value="" disabled selected>Seleccione</option>
+          <option *ngFor="let n of [0,1,2,3,4]" [value]="n">{{n}}</option>
+        </select>
+      </div>
+      <div *ngIf="ninos.invalid && ninos.touched" class="text-warning">
+        Selecciona el número de niños.
+      </div>
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-outline-light w-100"
+    [disabled]="f.invalid || !rangoFechasValido"
+  >
+    Ver disponibilidad
+  </button>
 </form>
+
+<!-- Resultado -->
+<div *ngIf="habitacionesDisponibles.length > 0" class="mt-4">
+  <h3 class="text-white">Habitaciones disponibles:</h3>
+
+  <div class="row">
+    <div *ngFor="let h of habitacionesDisponibles" class="col-12 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 shadow">
+        <div class="card-body bg-white">
+          <h5 class="card-title">{{ h.nombre }}</h5>
+          <p class="card-text">
+            <strong>Precio:</strong> ${{ h.valorNoche }} USD por noche
+          </p>
+          <p class="card-text">
+            <strong>Máximo personas:</strong> {{ h.maximoPersonas }}
+          </p>
+          <!-- Botón reservar -->
+          <button class="btn btn-primary w-100" (click)="guardarReserva()">Reservar</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

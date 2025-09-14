@@ -1,0 +1,32 @@
+<div class="container mt-5">
+  <h3 class="mb-3 text-center">🏨 Habitaciones Registradas</h3>
+
+  <table class="table table-hover table-bordered shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>Nombre</th>
+        <th>Valor/Noche</th>
+        <th>Descripción</th>
+        <th>Fotos</th>
+        <th>Máx. Personas</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let h of habitaciones">
+        <td>{{ h.nombre }}</td>
+        <td>${{ h.valorNoche }}</td>
+        <td>{{ h.descripcion }}</td>
+        <td>
+          <div *ngIf="h.fotografias && h.fotografias.length > 0">
+            <img *ngFor="let foto of h.fotografias"
+                 [src]="'assets/img/'+ h.fotografias[0]"
+                 alt="Foto habitación"
+                 class="img-thumbnail me-2"
+                 style="width: 80px; height: 80px; object-fit: cover;">
+          </div>
+        </td>
+        <td>{{ h.numeroMaximoPersonas }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

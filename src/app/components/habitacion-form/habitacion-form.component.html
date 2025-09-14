@@ -1,0 +1,54 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Registrar Nueva Habitación</h4>
+    </div>
+    <div class="card-body">
+      <!-- 🔥 ALERTAS BOOTSTRAP -->
+      <div *ngIf="mensaje" class="alert alert-{{tipoAlerta}} text-center" role="alert">
+        {{ mensaje }}
+      </div>
+      <form (ngSubmit)="guardarHabitacion()" #habitacionForm="ngForm">
+
+        <!-- Nombre -->
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" class="form-control"
+                 [(ngModel)]="habitacion.nombre" name="nombre" required>
+        </div>
+
+        <!-- Valor por noche -->
+        <div class="mb-3">
+          <label for="valorNoche" class="form-label">Valor por noche</label>
+          <input type="number" id="valorNoche" class="form-control"
+                 [(ngModel)]="habitacion.valorNoche" name="valorNoche" required min="0">
+        </div>
+
+        <!-- Descripción -->
+        <div class="mb-3">
+          <label for="descripcion" class="form-label">Descripción</label>
+          <textarea id="descripcion" rows="3" class="form-control"
+                    [(ngModel)]="habitacion.descripcion" name="descripcion" required></textarea>
+        </div>
+
+        <!-- Fotografías -->
+        <div class="mb-3">
+          <label for="fotografias" class="form-label">Fotografías (URLs separadas por coma)</label>
+          <input type="text" id="fotografias" class="form-control"
+                 [(ngModel)]="fotosInput" name="fotografias" placeholder="https://... , https://...">
+        </div>
+
+        <!-- Número máximo de personas -->
+        <div class="mb-3">
+          <label for="numeroMaximoPersonas" class="form-label">Número máximo de personas</label>
+          <input type="number" id="numeroMaximoPersonas" class="form-control"
+                 [(ngModel)]="habitacion.numeroMaximoPersonas" name="numeroMaximoPersonas" required min="1">
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+          <i class="bi bi-save"></i> Guardar Habitación
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
