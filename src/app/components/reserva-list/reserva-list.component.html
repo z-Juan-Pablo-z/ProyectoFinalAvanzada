@@ -20,12 +20,12 @@
         <td>{{ r.fechaSalida | date:'yyyy-MM-dd' }}</td>
         <td>{{ r.numeroAdultos }}</td>
         <td>{{ r.numeroNinos }}</td>
-        <td>${{ r.costo }}</td>
+        <td>${{ r.costoReserva }}</td>
         <td>
           <button class="btn btn-sm btn-danger me-2" (click)="eliminarReserva(r._id)">
             ❌ Eliminar
           </button>
-          <button class="btn btn-sm btn-primary" (click)="editarReserva(r)">
+          <button class="btn btn-sm btn-primary" (click)="abrirModal(r)">
             ✏️ Editar
           </button>
         </td>
@@ -36,5 +36,51 @@
   <!-- Si no hay reservas -->
   <div *ngIf="reservas.length === 0" class="alert alert-info text-center">
     No hay reservas registradas todavía.
+  </div>
+</div>
+
+<!-- 🟢 Modal Editar Reserva -->
+<div class="modal fade" id="editarReservaModal" tabindex="-1" aria-labelledby="editarReservaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form (ngSubmit)="guardarEdicion()" #reservaForm="ngForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarReservaModalLabel">✏️ Editar Reserva</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <label class="form-label">Fecha Entrada</label>
+            <input type="date" [(ngModel)]="reservaSeleccionada.fechaEntrada" name="fechaEntrada" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha Salida</label>
+            <input type="date" [(ngModel)]="reservaSeleccionada.fechaSalida" name="fechaSalida" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Número de Adultos</label>
+            <input type="number" [(ngModel)]="reservaSeleccionada.numeroAdultos" name="numeroAdultos" class="form-control" required min="1">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Número de Niños</label>
+            <input type="number" [(ngModel)]="reservaSeleccionada.numeroNinos" name="numeroNinos" class="form-control" min="0">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Costo Reserva</label>
+            <input type="number" [(ngModel)]="reservaSeleccionada.costoReserva" name="costoReserva" class="form-control" required min="0">
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success" [disabled]="!reservaForm.form.valid">💾 Guardar cambios</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

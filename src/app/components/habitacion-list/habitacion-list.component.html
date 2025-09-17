@@ -9,6 +9,7 @@
         <th>Descripción</th>
         <th>Fotos</th>
         <th>Máx. Personas</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -19,14 +20,66 @@
         <td>
           <div *ngIf="h.fotografias && h.fotografias.length > 0">
             <img *ngFor="let foto of h.fotografias"
-                 [src]="'assets/img/'+ h.fotografias[0]"
+                 [src]="'assets/img/'+ foto"
                  alt="Foto habitación"
                  class="img-thumbnail me-2"
                  style="width: 80px; height: 80px; object-fit: cover;">
           </div>
         </td>
         <td>{{ h.numeroMaximoPersonas }}</td>
+        <td>
+          <!-- Botón editar -->
+          <button class="btn btn-sm btn-primary me-2" (click)="abrirModalEditar(h)">
+            ✏️ Editar
+          </button>
+
+          <!-- Botón eliminar -->
+          <button class="btn btn-sm btn-danger" (click)="eliminarHabitacion(h._id)">
+            🗑️ Eliminar
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
+</div>
+
+<!-- Modal Editar Habitación -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">Editar Habitación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form #editarForm="ngForm">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" [(ngModel)]="habitacionSeleccionada.nombre" name="nombre" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Valor/Noche</label>
+            <input type="number" [(ngModel)]="habitacionSeleccionada.valorNoche" name="valorNoche" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea [(ngModel)]="habitacionSeleccionada.descripcion" name="descripcion" class="form-control"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Máx. Personas</label>
+            <input type="number" [(ngModel)]="habitacionSeleccionada.numeroMaximoPersonas" name="numeroMaximoPersonas" class="form-control">
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="guardarEdicion()">💾 Guardar</button>
+      </div>
+    </div>
+  </div>
 </div>

@@ -65,4 +65,9 @@ export class ReservaService {
       })
     );
   }
+
+  actualizarReserva(id: string, data: any) {
+    return this.http.put(`${this.apiUrl}/reserva/${id}`, data);
+  }
+
 }

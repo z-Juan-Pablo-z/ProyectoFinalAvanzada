@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,26 @@ export class HabitacionesService {
   // Agregar una nueva habitación
   addHabitacion(habitacion: any): Observable<any> {
     return this.peticion.post(`${this.apiUrl}/habitacion`, habitacion).pipe(
+      (res: any) => {
+        this.refreshNeeded$.next();
+        return res;
+      }
+    );
+  }
+
+  deleteHabitacion(id: string): Observable<any> {
+    let uri = "http://localhost:3000/hotelesnick";
+    return this.peticion.delete(`${uri}/habitacion/${id}`).pipe(
+      tap(() => {
+        this.refreshNeeded$.next();
+      })
+    );
+  }
+
+  // Actualizar habitación (si quieres editar en formulario)
+  updateHabitacion(id: string, habitacion: any) {
+    let uri = "http://localhost:3000/hotelesnick";
+    return this.peticion.put(`${uri}/habitacion/${id}`, habitacion).pipe(
       (res: any) => {
         this.refreshNeeded$.next();
         return res;

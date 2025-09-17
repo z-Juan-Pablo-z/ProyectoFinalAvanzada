@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReservaService } from '../../services/reserva.service';
 import { HabitacionesService } from '../../services/habitaciones.service';
+import { Subscription } from 'rxjs';
+declare var bootstrap: any;
 
 
 @Component({
@@ -8,31 +10,45 @@ import { HabitacionesService } from '../../services/habitaciones.service';
   templateUrl: './reserva-list.component.html',
   styleUrls: ['./reserva-list.component.css']
 })
-export class ReservasListComponent implements OnInit {
+export class ReservasListComponent implements OnInit, OnDestroy {
   reservas: any[] = [];
+  private subscription!: Subscription;
 
-  constructor(private reservaService: ReservaService,private HabitacionesService: HabitacionesService) {}
+  // 🟢 Para edición
+  reservaSeleccionada: any = {};
+  private modalRef: any;
+
+  constructor(
+    private reservaService: ReservaService,
+    private habitacionesService: HabitacionesService
+  ) {}
 
   ngOnInit(): void {
     this.cargarReservas();
+
+    // 🔄 Si tu servicio de reservas tiene un refresh$
+    if (this.reservaService.refresh$) {
+      this.subscription = this.reservaService.refresh$.subscribe(() => {
+        this.cargarReservas();
+      });
+    }
   }
 
   // 🔹 Traer todas las reservas del backend
   cargarReservas(): void {
     this.reservaService.obtenerReservas().subscribe({
-      next: (resp : any) => {
-        let reservasCargadas = resp.datos; // 👈 ya es un array
+      next: (resp: any) => {
+        let reservasCargadas = resp.datos;
 
-        // Para cada reserva, buscamos el nombre de la habitación
+        // Agregar nombre de la habitación
         reservasCargadas.forEach((reserva: any) => {
-          this.HabitacionesService.getHabitacionById(reserva.idHabitacion).subscribe((habitacion: any) => {
-            
-            reserva.nombreHabitacion = habitacion.datos.nombre; // 👈 añadimos el campo
+          this.habitacionesService.getHabitacionById(reserva.idHabitacion).subscribe((habitacion: any) => {
+            reserva.nombreHabitacion = habitacion.datos.nombre;
           });
         });
 
         this.reservas = reservasCargadas;
-        console.log("Reservas con nombre:", this.reservas);
+        console.log('Reservas con nombre:', this.reservas);
       },
       error: (err) => {
         console.error('❌ Error cargando reservas:', err);
@@ -55,9 +71,44 @@ export class ReservasListComponent implements OnInit {
     }
   }
 
-  // 🔹 Editar una reserva (por ahora solo mostramos en consola)
-  editarReserva(reserva: any): void {
-    console.log('✏️ Editar reserva:', reserva);
-    // Aquí puedes abrir un modal o redirigir a un formulario
+  // 🔹 Abrir modal de edición
+  abrirModal(reserva: any): void {
+    this.reservaSeleccionada = { ...reserva }; // Clonamos la reserva
+    const modalEl = document.getElementById('editarReservaModal');
+     // 🔥 Convertimos las fechas al formato yyyy-MM-dd para el input[type=date]
+    if (this.reservaSeleccionada.fechaEntrada) {
+      this.reservaSeleccionada.fechaEntrada = this.reservaSeleccionada.fechaEntrada.slice(0, 10);
+    }
+    if (this.reservaSeleccionada.fechaSalida) {
+      this.reservaSeleccionada.fechaSalida = this.reservaSeleccionada.fechaSalida.slice(0, 10);
+    }
+
+    console.log('✏️ Editar reserva:', this.reservaSeleccionada);
+    if (modalEl) {
+      this.modalRef = new bootstrap.Modal(modalEl);
+      this.modalRef.show();
+    }
+  }
+
+  
+
+  // 🔹 Guardar cambios en reserva
+  guardarEdicion(): void {
+    this.reservaService.actualizarReserva(this.reservaSeleccionada._id, this.reservaSeleccionada).subscribe({
+      next: () => {
+        console.log('✅ Reserva actualizada');
+        this.cargarReservas();
+        this.modalRef.hide();
+      },
+      error: (err) => {
+        console.error('❌ Error actualizando reserva:', err);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

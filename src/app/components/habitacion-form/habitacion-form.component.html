@@ -8,44 +8,59 @@
       <div *ngIf="mensaje" class="alert alert-{{tipoAlerta}} text-center" role="alert">
         {{ mensaje }}
       </div>
+
       <form (ngSubmit)="guardarHabitacion()" #habitacionForm="ngForm">
 
         <!-- Nombre -->
         <div class="mb-3">
           <label for="nombre" class="form-label">Nombre</label>
           <input type="text" id="nombre" class="form-control"
-                 [(ngModel)]="habitacion.nombre" name="nombre" required>
+                 [(ngModel)]="habitacion.nombre" name="nombre"
+                 required #nombre="ngModel">
+          <div *ngIf="nombre.invalid && nombre.touched" class="text-danger">
+            El nombre es obligatorio.
+          </div>
         </div>
 
         <!-- Valor por noche -->
         <div class="mb-3">
           <label for="valorNoche" class="form-label">Valor por noche</label>
           <input type="number" id="valorNoche" class="form-control"
-                 [(ngModel)]="habitacion.valorNoche" name="valorNoche" required min="0">
+                 [(ngModel)]="habitacion.valorNoche" name="valorNoche"
+                 required min="1" #valorNoche="ngModel">
+          <div *ngIf="valorNoche.invalid && valorNoche.touched" class="text-danger">
+            El valor por noche debe ser mayor a 0.
+          </div>
         </div>
 
-        <!-- Descripción -->
+        <!-- Descripción (opcional) -->
         <div class="mb-3">
-          <label for="descripcion" class="form-label">Descripción</label>
+          <label for="descripcion" class="form-label">Descripción (opcional)</label>
           <textarea id="descripcion" rows="3" class="form-control"
-                    [(ngModel)]="habitacion.descripcion" name="descripcion" required></textarea>
+                    [(ngModel)]="habitacion.descripcion" name="descripcion"></textarea>
         </div>
 
-        <!-- Fotografías -->
+        <!-- Fotografías (opcional) -->
         <div class="mb-3">
-          <label for="fotografias" class="form-label">Fotografías (URLs separadas por coma)</label>
+          <label for="fotografias" class="form-label">Fotografías (URLs separadas por coma, opcional)</label>
           <input type="text" id="fotografias" class="form-control"
-                 [(ngModel)]="fotosInput" name="fotografias" placeholder="https://... , https://...">
+                 [(ngModel)]="fotosInput" name="fotografias"
+                 placeholder="https://... , https://...">
         </div>
 
         <!-- Número máximo de personas -->
         <div class="mb-3">
           <label for="numeroMaximoPersonas" class="form-label">Número máximo de personas</label>
           <input type="number" id="numeroMaximoPersonas" class="form-control"
-                 [(ngModel)]="habitacion.numeroMaximoPersonas" name="numeroMaximoPersonas" required min="1">
+                 [(ngModel)]="habitacion.numeroMaximoPersonas" name="numeroMaximoPersonas"
+                 required min="1" #numeroMaximoPersonas="ngModel">
+          <div *ngIf="numeroMaximoPersonas.invalid && numeroMaximoPersonas.touched" class="text-danger">
+            El número máximo de personas debe ser mayor a 0.
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-success w-100">
+        <button type="submit" class="btn btn-success w-100"
+                [disabled]="habitacionForm.invalid">
           <i class="bi bi-save"></i> Guardar Habitación
         </button>
       </form>
