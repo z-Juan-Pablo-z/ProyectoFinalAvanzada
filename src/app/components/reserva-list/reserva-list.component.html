@@ -1,0 +1,40 @@
+<div class="container mt-5">
+  <h3 class="mb-3 text-center">📅 Reservas Registradas</h3>
+
+  <table class="table table-hover table-bordered shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>Habitación</th>
+        <th>Fecha Entrada</th>
+        <th>Fecha Salida</th>
+        <th>Adultos</th>
+        <th>Niños</th>
+        <th>Costo Total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of reservas">
+        <td>{{ r.nombreHabitacion || '---' }}</td>
+        <td>{{ r.fechaEntrada | date:'yyyy-MM-dd' }}</td>
+        <td>{{ r.fechaSalida | date:'yyyy-MM-dd' }}</td>
+        <td>{{ r.numeroAdultos }}</td>
+        <td>{{ r.numeroNinos }}</td>
+        <td>${{ r.costo }}</td>
+        <td>
+          <button class="btn btn-sm btn-danger me-2" (click)="eliminarReserva(r._id)">
+            ❌ Eliminar
+          </button>
+          <button class="btn btn-sm btn-primary" (click)="editarReserva(r)">
+            ✏️ Editar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Si no hay reservas -->
+  <div *ngIf="reservas.length === 0" class="alert alert-info text-center">
+    No hay reservas registradas todavía.
+  </div>
+</div>

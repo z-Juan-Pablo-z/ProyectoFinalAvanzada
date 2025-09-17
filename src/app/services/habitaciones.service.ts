@@ -1,37 +1,38 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http'
-import { Observable, Subject  } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HabitacionesService {
-  //  Subject para refrescar listado
   private refreshNeeded$ = new Subject<void>();
-  // Observable que podrán escuchar otros componentes
-   get refresh$() {
+
+  get refresh$() {
     return this.refreshNeeded$.asObservable();
   }
-  constructor(public peticion:HttpClient) {}
-    // Obtener todas las habitaciones
-  consultarHabitaciones():Observable<any>{
-    let uri = "http://localhost:3000/hotelesnick/habitaciones"
-    
-    //let uri = "http://serve20222.herokuapp.com/hotelesnick/habitaciones"
-    return this.peticion.get(uri);
+
+  private apiUrl = "http://localhost:3000/hotelesnick"; // 👈 Centralizamos aquí
+
+  constructor(public peticion: HttpClient) {}
+
+  // Obtener todas las habitaciones
+  consultarHabitaciones(): Observable<any> {
+    return this.peticion.get(`${this.apiUrl}/habitaciones`);
   }
-  
-  // Agregar una nueva habitación y emitir el refresh
+
+  // Obtener habitación por ID
+  getHabitacionById(idHabitacion: string): Observable<any> {
+    return this.peticion.get(`${this.apiUrl}/habitacion/${idHabitacion}`);
+  }
+
+  // Agregar una nueva habitación
   addHabitacion(habitacion: any): Observable<any> {
-    let uri = "http://localhost:3000/hotelesnick"
-    return this.peticion.post(`${uri}/habitacion`, habitacion).pipe(
-      //al completar la peticion notificamos a los subscriptores
-      (res: any)=>{
+    return this.peticion.post(`${this.apiUrl}/habitacion`, habitacion).pipe(
+      (res: any) => {
         this.refreshNeeded$.next();
         return res;
       }
     );
   }
-  
-
 }

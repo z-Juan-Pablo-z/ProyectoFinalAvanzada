@@ -3,6 +3,7 @@ import { ReservaService } from '../services/reserva.service';
 import { BusquedaReserva } from '../services/reserva.service';
 import { HabitacionesService } from '../services/habitaciones.service';
 
+
 @Component({
   selector: 'app-formareserva',
   templateUrl: './formareserva.component.html',
@@ -65,10 +66,12 @@ export class FormareservaComponent {
     });
   }
 
-  guardarReserva() {
+  
+  guardarReserva(idHabitacion : string) {
     // Validar que las fechas y personas estén correctas
     this.validarRangoFechas();
-
+    
+    let id = idHabitacion;
     if (!this.busqueda.fechaEntrada || !this.busqueda.fechaSalida) {
       this.mostrarAlerta('Debes ingresar fechas válidas 🗓️', 'danger');
       return;
@@ -87,8 +90,9 @@ export class FormareservaComponent {
     const reserva = {
       fechaEntrada: this.busqueda.fechaEntrada,
       fechaSalida: this.busqueda.fechaSalida,
-      adultos: this.busqueda.adultos,
-      ninos: this.busqueda.ninos
+      numeroAdultos: this.busqueda.adultos,
+      numeroNinos: this.busqueda.ninos,
+      idHabitacion: id
     };
 
     this.reservaService.addReserva(reserva).subscribe({

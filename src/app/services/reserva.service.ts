@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject  } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-
-
-// Aquí defines el modelo directamente en el servicio
+// Modelo para la búsqueda de disponibilidad
 export interface BusquedaReserva {
   fechaEntrada: string;
   fechaSalida: string;
@@ -13,32 +11,58 @@ export interface BusquedaReserva {
   ninos: number;
 }
 
+// Modelo básico para reservas (puedes ampliarlo si tu backend devuelve más campos)
+export interface Reserva {
+  _id?: string;   // MongoDB asigna un _id
+  fechaEntrada: string;
+  fechaSalida: string;
+  numeroAdultos: number;
+  numeroNinos: number;
+  idHabitacion: string;
+  costo?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ReservaService {
-  //  Subject para refrescar listado
+
   private refreshNeeded$ = new Subject<void>();
-  // Observable que podrán escuchar otros componentes
-   get refresh$() {
+
+  get refresh$() {
     return this.refreshNeeded$.asObservable();
   }
 
-  private apiUrl = 'http://localhost:3000/hotelesnick/reservas'; // Cambia la URL según tu backend
+  private apiUrl = 'http://localhost:3000/hotelesnick';
 
-  constructor(public peticion: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
+  // Buscar habitaciones disponibles
   buscarDisponibilidad(filtros: BusquedaReserva): Observable<any[]> {
-    return this.peticion.post<any[]>(`${this.apiUrl}/disponibles`, filtros);
+    return this.http.post<any[]>(`${this.apiUrl}/reservas/disponibles`, filtros);
   }
 
-  addReserva(reserva: any): Observable<any> {
-      let uri = "http://localhost:3000/hotelesnick"
-      return this.peticion.post(`${uri}/reserva`, reserva).pipe(
-        tap(() => {
-          this.refreshNeeded$.next();
-        })
-      );
-    }
+  // Registrar nueva reserva
+  addReserva(reserva: Reserva): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reserva`, reserva).pipe(
+      tap(() => {
+        this.refreshNeeded$.next();
+      })
+    );
+  }
+  
+  // Obtener todas las reservas
+  obtenerReservas(): Observable<any> {
+    let uri = `${this.apiUrl}/reservas`;
+    return this.http.get(uri);
+  }
 
+  // Eliminar una reserva por ID
+  eliminarReserva(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/reserva/${id}`).pipe(
+      tap(() => {
+        this.refreshNeeded$.next();
+      })
+    );
+  }
 }

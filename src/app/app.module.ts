@@ -11,7 +11,8 @@ import { HabitacionesComponent } from './habitaciones/habitaciones.component';
 import {HttpClientModule} from '@angular/common/http';
 import { HabitacionFormComponent } from './components/habitacion-form/habitacion-form.component'
 import { FormsModule } from '@angular/forms';
-import { HabitacionListComponent } from './components/habitacion-list/habitacion-list.component'; //
+import { HabitacionListComponent } from './components/habitacion-list/habitacion-list.component';
+import { ReservasListComponent } from './components/reserva-list/reserva-list.component'; //
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HabitacionListComponent } from './components/habitacion-list/habitacion
     FormareservaComponent,
     HabitacionesComponent,
     HabitacionFormComponent,
-    HabitacionListComponent
+    HabitacionListComponent,
+    ReservasListComponent
   ],
   imports: [
     BrowserModule,

@@ -115,10 +115,10 @@
             <strong>Precio:</strong> ${{ h.valorNoche }} USD por noche
           </p>
           <p class="card-text">
-            <strong>Máximo personas:</strong> {{ h.maximoPersonas }}
+            <strong>Máximo personas:</strong> {{ h.numeroMaximoPersonas }}
           </p>
           <!-- Botón reservar -->
-          <button class="btn btn-primary w-100" (click)="guardarReserva()">Reservar</button>
+          <button class="btn btn-primary w-100" (click)="guardarReserva(h._id)">Reservar</button>
 
         </div>
       </div>
