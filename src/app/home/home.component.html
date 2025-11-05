@@ -34,16 +34,21 @@
 -->
 
 <div class="container">
-  <!--Listado de reservas-->
-  <app-reserva-list></app-reserva-list>
-  <!-- Formulario -->
-  <app-habitacion-form></app-habitacion-form>
-
-  <hr class="my-5">
-
-  <!-- Listado -->
-  <app-habitacion-list></app-habitacion-list>
-
+    <!--
+            
+        Listado de reservas
+        <app-reserva-list></app-reserva-list>
+        Formulario 
+        <app-habitacion-form></app-habitacion-form>
+    
+        <hr class="my-5">
+    
+        <!-- Listado 
+        <app-habitacion-list></app-habitacion-list>
+    -->
+<div class="container my-4">
+  <router-outlet></router-outlet>  <!-- Aquí se renderizan los componentes -->
+</div>
   
 </div>
 
